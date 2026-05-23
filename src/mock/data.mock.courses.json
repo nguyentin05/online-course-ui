@@ -1,0 +1,56 @@
+[
+  {
+    "id": 1,
+    "subject": "Complete React Native - Mobile App Development",
+    "description": "Khoá học toàn diện về lập trình di động đa nền tảng với React Native. Từ cơ bản đến deploy ứng dụng thực tế.",
+    "image": "https://images.unsplash.com/photo-1555099962-4199c345e5dd?q=80&w=800&auto=format&fit=crop",
+    "video": "https://youtube.com/...",
+    "duration": 1470, 
+    "price": 49.99,
+    "instructorId": {
+      "id": 101,
+      "fullName": "Nguyen Trong Tin",
+      "avatar": "https://api.dicebear.com/7.x/avataaars/svg?seed=Tin"
+    },
+    "categoryId": {
+      "id": 10,
+      "name": "Development"
+    }
+  },
+  {
+    "id": 2,
+    "subject": "Spring Boot & Microservices Architecture",
+    "description": "Tìm hiểu kiến trúc Microservices, Gateway, Service Discovery và bảo mật hệ thống Backend chuyên sâu.",
+    "image": "https://images.unsplash.com/photo-1517694712202-14dd9538aa97?q=80&w=800&auto=format&fit=crop",
+    "video": "https://youtube.com/...",
+    "duration": 1935,
+    "price": 89.99,
+    "instructorId": {
+      "id": 102,
+      "fullName": "Tran Anh Tu",
+      "avatar": "https://api.dicebear.com/7.x/avataaars/svg?seed=Tu"
+    },
+    "categoryId": {
+      "id": 11,
+      "name": "Backend"
+    }
+  },
+  {
+    "id": 3,
+    "subject": "DevOps Masterclass: CI/CD & Terraform",
+    "description": "Tự động hóa quy trình triển khai với Docker, GitHub Actions và quản lý hạ tầng bằng Terraform.",
+    "image": "https://images.unsplash.com/photo-1618401471353-b98a5233c591?q=80&w=800&auto=format&fit=crop",
+    "video": "https://youtube.com/...",
+    "duration": 1125,
+    "price": 0,
+    "instructorId": {
+      "id": 103,
+      "fullName": "Tran Thanh Tung",
+      "avatar": "https://api.dicebear.com/7.x/avataaars/svg?seed=Tung"
+    },
+    "categoryId": {
+      "id": 12,
+      "name": "DevOps"
+    }
+  }
+]
