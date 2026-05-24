@@ -1,10 +1,9 @@
 import React from 'react';
-import { motion, AnimatePresence } from 'framer-motion'; // THÊM IMPORT NÀY
+import { motion, AnimatePresence } from 'framer-motion';
 import CourseCard from './CourseCard';
 import CourseSkeleton from './CourseSkeleton';
 
-export default function CourseGrid({ courses = [], isLoading = false, skeletonCount = 8 }) {
-  // 1. Trạng thái đang tải dữ liệu (Cũng cho nó hiệu ứng mờ dần vào)
+const CourseGrid = ({ courses = [], isLoading = false, skeletonCount = 8 }) => {
   if (isLoading) {
     return (
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
@@ -22,7 +21,6 @@ export default function CourseGrid({ courses = [], isLoading = false, skeletonCo
     );
   }
 
-  // 2. Trạng thái không có dữ liệu
   if (!isLoading && courses.length === 0) {
     return (
       <motion.div 
@@ -36,20 +34,19 @@ export default function CourseGrid({ courses = [], isLoading = false, skeletonCo
     );
   }
 
-  // 3. Trạng thái có dữ liệu: Đưa AnimatePresence vào đây!
   return (
     <motion.div layout className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
       <AnimatePresence mode="popLayout">
         {courses.map((course, index) => (
           <motion.div
             key={course.id}
-            layout // Giúp thẻ tự động trượt mượt mà khi đổi vị trí lúc sort/filter
-            initial={{ opacity: 0, y: 20 }} // Bắt đầu: mờ và tụt xuống 20px
-            animate={{ opacity: 1, y: 0 }}  // Điểm đến: rõ nét và đúng vị trí
-            exit={{ opacity: 0, scale: 0.9 }} // Khi biến mất: mờ và thu nhỏ
+            layout
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, scale: 0.9 }}
             transition={{ 
               duration: 0.4, 
-              delay: index * 0.05 // Delay tăng dần tạo hiệu ứng lượn sóng (stagger)
+              delay: index * 0.05
             }}
           >
             <CourseCard course={course}>
@@ -70,3 +67,5 @@ export default function CourseGrid({ courses = [], isLoading = false, skeletonCo
     </motion.div>
   );
 }
+
+export default CourseGrid;

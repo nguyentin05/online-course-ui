@@ -1,16 +1,16 @@
 import { useNavigate } from 'react-router-dom';
 
 const useViewTransition = () => {
-  const navigate = useNavigate();
+  const nav = useNavigate();
 
   const navigateWithTransition = (to) => {
     if (!document.startViewTransition) {
-      navigate(to);
+      nav(to);
       return;
     }
 
     document.startViewTransition(() => {
-      navigate(to);
+      nav(to);
     });
   };
 

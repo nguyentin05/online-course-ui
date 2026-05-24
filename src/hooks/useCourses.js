@@ -1,15 +1,26 @@
 import { useState, useEffect } from 'react';
-import mockCourses from '../mock/data.mock.courses.json';
+import Apis, { endpoints } from '../configs/Apis'
+import { PAGE_SIZE } from '../constants/pagination';
+import { courseService } from '../services/courseService';
 
-//Lưu ý thêm: JSON.stringify(filters) hoạt động tốt với mock data. 
-// Khi chuyển sang API thực, nên đổi thành destructure từng field ra dependency array cho chuẩn hơn:
-// dong 44:
-// }, [category, keyword, page]);
 
 const useCourses = (filters = {}) => {
-  const { category = null, keyword = '', page = 1, limit = null } = filters;
+  const {
+    keyword = '',
+    instructor = '',
+    categoryId = null,
+    minPrice = null,
+    maxPrice = null,
+    sortBy = 'subject',
+    sortDir = 'asc',
+    page = 0,
+    size = PAGE_SIZE,
+    limit = null
+  } = filters;
 
   const [courses, setCourses] = useState([]);
+  const [totalPages, setTotalPages] = useState(0);
+  const [totalElements, setTotalElements] = useState(0);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
 
@@ -18,32 +29,34 @@ const useCourses = (filters = {}) => {
       setIsLoading(true);
       setError(null);
       try {
-        await new Promise(resolve => setTimeout(resolve, 800));
+        const params = {};
+        if (keyword) params.keyword = keyword;
+        if (instructor) params.instructor = instructor;
+        if (categoryId) params.categoryId = categoryId;
+        if (minPrice) params.minPrice = minPrice;
+        if (maxPrice) params.maxPrice = maxPrice;
+        params.sortBy = sortBy;
+        params.sortDir = sortDir;
+        params.page = page;
+        params.size = limit ?? size;
 
-        let data = mockCourses;
+        const res = await courseService.getAll(params);
+        const data = res.data.data;
 
-        if (category) {
-          data = data.filter(c => c.categoryId.name === category);
-        }
-        if (keyword) {
-          data = data.filter(c => c.subject.toLowerCase().includes(keyword.toLowerCase()));
-        }
-        if (limit) {
-          data = data.slice(0, limit);
-        }
-
-        setCourses(data);
+        setCourses(data.content);
+        setTotalPages(data.totalPages);
+        setTotalElements(data.totalElements);
       } catch (err) {
-        setError('Không thể tải danh sách khóa học lúc này.');
+        setError('Không thể tải danh sách khóa học');
       } finally {
         setIsLoading(false);
       }
     };
 
     fetchCourses();
-  }, [JSON.stringify(filters)]);
+  }, [keyword, instructor, categoryId, minPrice, maxPrice, sortBy, sortDir, page, size, limit]);
 
-  return { courses, isLoading, error };
+  return { courses, totalPages, totalElements, isLoading, error };
 }
 
 export default useCourses;

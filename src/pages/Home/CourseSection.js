@@ -4,10 +4,11 @@ import useCategories from "../../hooks/useCategories";
 import CourseGrid from '../../components/course/CourseGrid';
 import { ArrowRight } from "lucide-react";
 import { Link } from "react-router-dom";
+import { HOME_COURSE_LIMIT } from "../../constants/pagination";
 
 const CourseSection = () => {
-  const [selectedCategory, setSelectedCategory] = useState(null);
-  const { courses, isLoading, error } = useCourses({ category: selectedCategory, limit: 4 });
+  const [selectedCategoryId, setSelectedCategoryId] = useState(null);
+  const { courses, isLoading, error } = useCourses({ categoryId: selectedCategoryId, limit: HOME_COURSE_LIMIT });
   const { categories } = useCategories();
 
   return (
@@ -22,12 +23,12 @@ const CourseSection = () => {
 
 				<div className="flex flex-wrap gap-2">
 					{categories.map(c => (<button key={c.id} onClick={() =>
-								setSelectedCategory(
-									selectedCategory === c.name ? null : c.name
+								setSelectedCategoryId(
+									selectedCategoryId === c.id ? null : c.id
 								)
 							}
 							className={`px-4 py-2 rounded-full text-sm font-medium border transition-all ${
-								selectedCategory === c.name
+								selectedCategoryId === c.id
 									? 'bg-brand text-white border-brand'
 									: 'bg-white text-gray-600 border-gray-200 hover:border-brand hover:text-brand'
 							}`}

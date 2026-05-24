@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import mockCategories from '../mock/data.mock.categories.json';
+import { categoryService } from '../services/categoryService';
 
 const useCategories = () => {
   const [categories, setCategories] = useState([]);
@@ -10,11 +11,12 @@ const useCategories = () => {
     const fetchCategories = async () => {
       setIsLoading(true);
       try {
-        let data = mockCategories;
+        const res = await categoryService.getAll();
+        const data = res.data.data;
 
         setCategories(data);
       } catch (error) {
-        console.error("Lỗi tải danh mục", error);
+        setError('Không thể tải danh mục');
       } finally {
         setIsLoading(false);
       }
@@ -23,7 +25,7 @@ const useCategories = () => {
     fetchCategories();
   }, []);
 
-  return { categories, isLoading };
+  return { categories, isLoading, error };
 }
 
 export default useCategories;

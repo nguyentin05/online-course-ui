@@ -2,10 +2,10 @@ import React from 'react';
 import { Clock } from 'lucide-react';
 import { useCourseContext } from './index';
 
-export default function Meta() {
+const Meta = () => {
   const { duration } = useCourseContext();
-  const hours = Math.floor(duration / 60);
-  const minutes = duration % 60;
+  const hours = duration ? Math.floor(duration / 60) : 0;
+  const minutes = duration ? duration % 60 : 0;
 
   return (
     <div className="flex items-center text-xs text-gray-500 gap-1 mt-1">
@@ -13,3 +13,5 @@ export default function Meta() {
     </div>
   );
 }
+
+export default Meta;

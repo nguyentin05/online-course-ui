@@ -3,12 +3,12 @@ import { useState, useCallback } from 'react';
 const useOptimistic = (initialState) => {
   const [state, setState] = useState(initialState);
 
-  const updateOptimistically = useCallback(async (optimisticValue, asyncAction) => {
+  const updateOptimistically = useCallback(async (value, action) => {
     const previousState = state;
-    setState(optimisticValue);
+    setState(value);
 
     try {
-      await asyncAction();
+      await action();
       return true;
     } catch (error) {
       console.error("Thao tác thất bại, rollback giao diện:", error);
