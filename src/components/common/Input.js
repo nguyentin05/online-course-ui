@@ -57,12 +57,8 @@ const Input = forwardRef(({
       </div>
       
       {/* Vùng hiển thị lỗi (Thường Search Bar sẽ không cần hiện lỗi đỏ lòm ở dưới) */}
-      {variant !== 'search' && (
-        <div className="min-h-[20px] mt-1">
-          {error && (
-            <span className="text-sm text-red-500">{error}</span>
-          )}
-        </div>
+      {variant !== 'search' && error && (
+        <span className="text-xs text-red-500 mt-0.5">{error}</span>
       )}
     </div>
   );
