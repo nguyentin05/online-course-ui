@@ -5,7 +5,7 @@ import ProtectedRoute from '../components/common/ProtectedRoute';
 
 const Home = React.lazy(() => import('../pages/Home/Home'));
 const Login = React.lazy(() => import('../pages/User/Login'));
-const Register = React.lazy(() => import('../pages/User/Register'));
+const Register = React.lazy(() => import('../pages/User/Register/Register'));
 const Search = React.lazy(() => import('../pages/Search/Search'));
 const CourseDetail = React.lazy(() => import('../pages/Course/CourseDetail'));
 const CourseComparePage = React.lazy(() => import('../pages/Course/CourseCompare'));

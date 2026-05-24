@@ -13,7 +13,6 @@ export default function CourseLesson() {
     courses.find(c => c.id.toString() === courseId), 
   [courses, courseId]);
 
-  // GIẢ LẬP KHÓA HỌC CÓ 1000 BÀI HỌC ĐỂ TEST HIỆU NĂNG
   const lessons = useMemo(() => {
     return Array.from({ length: 1000 }).map((_, i) => ({
       id: i + 1,

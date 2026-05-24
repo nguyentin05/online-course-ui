@@ -56,7 +56,7 @@ const Header = () => {
 
   const handleSelect = (courseId) => {
     setShowDrop(false);
-    navigate(`/courses/${courseId}`);
+    navigate(`/course/${courseId}`);
   };
 
   return (
