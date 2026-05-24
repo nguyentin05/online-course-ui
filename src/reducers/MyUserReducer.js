@@ -6,8 +6,8 @@ export default (current, action) => {
       case "LOGIN":
           return action.payload;
       case "LOGOUT":
-          cookies.remove('token');
-          cookies.remove('user');
+          cookies.remove('token', { path: '/' });
+          cookies.remove('user', { path: '/' });
           return null;
   }
 

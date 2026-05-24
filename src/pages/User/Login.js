@@ -4,42 +4,42 @@ import { BookOpen } from 'lucide-react';
 import Input from '../../components/common/Input';
 import Button from '../../components/common/Button';
 import useUser from '../../hooks/useUser';
+import Logo from '../../components/common/Logo';
+import { useState } from 'react';
+import { authService } from '../../services/authService';
 
 const Login = () => {
   const navigate = useNavigate();
-  
+  const [error, setError] = useState('');
   const {register, handleSubmit, formState: { errors, isSubmitting }} = useForm();
-
   const { login } = useUser();
 
   const onSubmit = async (data) => {
+    setError('');
     try {
-      await new Promise(resolve => setTimeout(resolve, 1500));
+      const res = await authService.login(data);
+      const data = res.data.data;
 
-      const fakeUserFromDB = {
-        id: 1,
-        fullName: "Nguyễn Trọng Tín",
-        email: data.email,
-        role: "STUDENT",
-        avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Tin"
-      };
+      const userData = {
+          username: data.username,
+          role: data.role
+        };
+      const token = data.token;
 
-      login(fakeUserFromDB);
-      
+      login(userData, token);
+
       navigate('/');
     } catch (error) {
-      console.error(error);
+      console.error("Lỗi đăng nhập:", error);
+      const errorMsg = error.response?.data?.message || 'Sai tên đăng nhập hoặc mật khẩu!';
+      setError(errorMsg);
     }
   };
 
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8">
       <div className="sm:mx-auto sm:w-full sm:max-w-md">
-        <Link to="/" className="flex justify-center items-center gap-2 mb-6">
-          <div className="bg-brand w-10 h-10 rounded-xl flex items-center justify-center text-white shadow-lg shadow-brand/20">
-            <BookOpen size={24} />
-          </div>
-        </Link>
+        <Logo size="md" className="justify-center mb-4" />
         <h2 className="text-center text-3xl font-extrabold text-gray-900 tracking-tight">
           Chào mừng trở lại
         </h2>
@@ -55,18 +55,19 @@ const Login = () => {
         <div className="bg-white py-8 px-4 shadow sm:rounded-2xl sm:px-10 border border-gray-100">
           
           <form className="space-y-5" onSubmit={handleSubmit(onSubmit)}>
-            
+            {error && (
+              <div className="p-3 bg-red-50 text-red-600 text-sm rounded-lg border border-red-100 text-center">
+                {error}
+              </div>
+            )}
+
             <Input 
-              label="Địa chỉ Email"
-              type="email"
-              placeholder="tin@nitt.com"
-              error={errors.email?.message}
-              {...register("email", { 
-                required: "Email không được để trống",
-                pattern: {
-                  value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
-                  message: "Email không đúng định dạng"
-                }
+              label="Tên đăng nhập"
+              type="text"
+              placeholder="trongtin140605"
+              error={errors.username?.message}
+              {...register("username", { 
+                required: "Vui lòng nhập tên đăng nhập"
               })}
             />
 
@@ -76,11 +77,7 @@ const Login = () => {
               placeholder="••••••••"
               error={errors.password?.message}
               {...register("password", { 
-                required: "Mật khẩu không được để trống",
-                minLength: {
-                  value: 6,
-                  message: "Mật khẩu phải có ít nhất 6 ký tự"
-                }
+                required: "Vui lòng nhập mật khẩu"
               })}
             />
 
