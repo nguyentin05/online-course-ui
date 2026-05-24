@@ -9,18 +9,24 @@ import './CourseCard.css';
 import { Link } from 'react-router-dom';
 import useViewTransition from '../../../hooks/useViewTransition';
 
-// 1. Tạo Context để chia sẻ dữ liệu
 const CourseContext = createContext();
 
-export function useCourseContext() {
+export const useCourseContext = () => {
   const context = useContext(CourseContext);
-  if (!context) {
-    throw new Error('Các component con phải được đặt bên trong <CourseCard>');
-  }
   return context;
 }
 
 const CourseCard = ({ course, children, className = '' }) => {
+  const normalizedCourse = {
+    id: course?.id ?? null,
+    subject: course?.subject ?? 'Course',
+    image: course?.image ?? '/images/default-course.png',
+    price: course?.price ?? 0,
+    duration: course?.duration ?? 0,
+    instructorId: course?.instructorId ?? null,
+    categoryId: course?.categoryId ?? null,
+  };
+
   const navigateWithTransition = useViewTransition();
 
   const handleCardClick = () => {
@@ -28,12 +34,13 @@ const CourseCard = ({ course, children, className = '' }) => {
   };
 
   return (
-    <CourseContext.Provider value={course}>
-      <Link to={`/course/${course.id}`}>
-        <div className={`bg-white rounded-2xl border border-gray-100 overflow-hidden hover:shadow-xl hover:shadow-brand/5 transition-all duration-300 group flex flex-col h-full course-card-container ${className}`}>
-          {children}
-        </div>
-      </Link>
+    <CourseContext.Provider value={normalizedCourse}>
+      <div 
+        onClick={() => navigateWithTransition(`/course/${normalizedCourse.id}`)}
+        className={`bg-white rounded-2xl border border-gray-100 overflow-hidden hover:shadow-xl hover:shadow-brand/5 transition-all duration-300 group flex flex-col h-full course-card-container cursor-pointer ${className}`}
+        >
+        {children}
+      </div>
     </CourseContext.Provider>
   );
 }
