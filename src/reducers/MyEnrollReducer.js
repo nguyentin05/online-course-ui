@@ -8,8 +8,7 @@ export default (current, action) => {
       return {...current, enrolledCourses: action.payload};
 
     case 'ENROLL_COURSE': {
-      const alreadyEnrolled = current.enrolledCourses.find(c => c.id === action.payload.id);
-      if (alreadyEnrolled) 
+      if (current.enrolledCourses.find(c => c.id === action.payload.id)) 
         return current;
 
       return {...current, enrolledCourses: [...current.enrolledCourses, action.payload]};
