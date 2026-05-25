@@ -1,7 +1,9 @@
-import React from 'react';
-import { Routes, Route } from 'react-router-dom';
+import React, { Suspense } from 'react';
+import { Routes, Route, useLocation, Outlet } from 'react-router-dom';
 import MainLayout from '../components/layout/MainLayout';
 import ProtectedRoute from '../components/common/ProtectedRoute';
+import { AnimatePresence } from 'framer-motion';
+import MySpinner from '../components/layout/MySpinner';
 
 const Home = React.lazy(() => import('../pages/Home/Home'));
 const Login = React.lazy(() => import('../pages/User/Login'));
@@ -18,33 +20,46 @@ const CourseEditor = React.lazy(() => import('../pages/Instructor/CourseEditor')
 const LessonEditor = React.lazy(() => import('../pages/Instructor/LessonEditor'));
 const TrackStudents = React.lazy(() => import('../pages/Instructor/TrackStudents'));
 
-const AppRoutes = () => (
-  <Routes>
-    <Route path="/login" element={<Login />} />
-    <Route path="/register" element={<Register />} />
-    <Route path="/course/:courseId/lesson" element={<CourseLesson />} />
-
-    <Route element={<MainLayout />}>
-      <Route path="/" element={<Home />} />
-      <Route path="/search" element={<Search />} />
-      <Route path="/course/:courseId" element={<CourseDetail />} />
-      <Route path="/compare" element={<CourseComparePage />} />
-
-      <Route element={<ProtectedRoute />}>
-        <Route path="/profile" element={<Profile />} />
-        <Route path="/my-learning" element={<MyLearning />} />
-      </Route>
-
-      <Route element={<ProtectedRoute allowedRoles={['INSTRUCTOR']} />}>
-        <Route path="/instructor/dashboard" element={<InsDashboard />} />
-        <Route path="/instructor/courses" element={<MyCourses />} />
-        <Route path="/instructor/course/create" element={<CourseEditor />} />
-        <Route path="/instructor/course/edit/:courseId" element={<CourseEditor />} />
-        <Route path="/instructor/course/:courseId/lessons" element={<LessonEditor />} />
-        <Route path="/instructor/course/:courseId/students" element={<TrackStudents />} />
-      </Route>
-    </Route>
-  </Routes>
+const SuspenseWrapper = () => (
+  <Suspense fallback={<MySpinner />}>
+    <Outlet />
+  </Suspense>
 );
+
+const AppRoutes = () => {
+  const location = useLocation();
+  return (
+    <AnimatePresence mode="wait">
+      <Routes key={location.pathname} location={location}>
+        <Route element={<SuspenseWrapper />}>
+          <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<Register />} />
+          <Route path="/course/:courseId/lesson" element={<CourseLesson />} />
+
+          <Route element={<MainLayout />}>
+            <Route path="/" element={<Home />} />
+            <Route path="/search" element={<Search />} />
+            <Route path="/course/:courseId" element={<CourseDetail />} />
+            <Route path="/compare" element={<CourseComparePage />} />
+
+            <Route element={<ProtectedRoute />}>
+              <Route path="/profile" element={<Profile />} />
+              <Route path="/my-learning" element={<MyLearning />} />
+            </Route>
+
+            <Route element={<ProtectedRoute allowedRoles={['INSTRUCTOR']} />}>
+              <Route path="/instructor/dashboard" element={<InsDashboard />} />
+              <Route path="/instructor/courses" element={<MyCourses />} />
+              <Route path="/instructor/course/create" element={<CourseEditor />} />
+              <Route path="/instructor/course/edit/:courseId" element={<CourseEditor />} />
+              <Route path="/instructor/course/:courseId/lessons" element={<LessonEditor />} />
+              <Route path="/instructor/course/:courseId/students" element={<TrackStudents />} />
+            </Route>
+          </Route>
+        </Route>
+      </Routes>
+    </AnimatePresence>
+  );
+};
 
 export default AppRoutes;

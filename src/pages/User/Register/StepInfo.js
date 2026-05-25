@@ -21,65 +21,38 @@ const StepInfo = ({ register, errors, trigger, onNext, onBack }) => {
         <Input
           label="Họ" type="text" placeholder="Nguyễn"
           error={errors.lastName?.message}
-          {...register("lastName", { 
-            required: "Vui lòng nhập họ",
-            validate: (v) => v.trim().length > 0 || "Họ không được để trống"
-          })}
+          {...register("lastName")}
           
         />
         <Input
           label="Tên" type="text" placeholder="Văn A"
           error={errors.firstName?.message}
-          {...register("firstName", { 
-            required: "Vui lòng nhập tên",
-            validate: (v) => v.trim().length > 0 || "Tên không được để trống"
-          })}
+          {...register("firstName")}
         />
       </div>
 
       <Input
         label="Tên đăng nhập" type="text" placeholder="username123"
         error={errors.username?.message}
-        {...register("username", {
-          required: "Vui lòng nhập tên đăng nhập",
-          minLength: { value: 3, message: "Tối thiểu 3 ký tự" },
-          maxLength: { value: 50, message: "Tối đa 50 ký tự" },
-          pattern: {
-            value: /^[a-zA-Z0-9_]+$/,
-            message: "Chỉ dùng chữ, số và dấu gạch dưới"
-          }
-        })}
+        {...register("username")}
       />
 
       <Input
         label="Địa chỉ Email" type="email" placeholder="email@example.com"
         error={errors.email?.message}
-        {...register("email", {
-          required: "Vui lòng nhập email",
-          pattern: {
-            value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
-            message: "Email không đúng định dạng"
-          }
-        })}
+        {...register("email")}
       />
 
       <Input
         label="Mật khẩu" type="password" placeholder="••••••••"
         error={errors.password?.message}
-        {...register("password", {
-          required: "Vui lòng nhập mật khẩu",
-          minLength: { value: 6, message: "Tối thiểu 6 ký tự" }
-        })}
+        {...register("password")}
       />
 
       <Input
         label="Xác nhận mật khẩu" type="password" placeholder="••••••••"
         error={errors.confirmPassword?.message}
-        {...register("confirmPassword", {
-          required: "Vui lòng xác nhận mật khẩu",
-          validate: (value, formValues) =>
-            value === formValues.password || "Mật khẩu xác nhận không khớp"
-        })}
+        {...register("confirmPassword")}
       />
 
       <div className="flex gap-3 pt-1">

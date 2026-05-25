@@ -1,26 +1,28 @@
-import { Suspense, useReducer } from 'react';
+import { useReducer } from 'react';
 import { BrowserRouter } from 'react-router-dom';
-import { UserContext, EnrollContext } from './configs/MyContexts';
+import { EnrollContext } from './configs/MyContexts';
 import MyUserReducer from './reducers/MyUserReducer';
 import MyEnrollReducer, { initialEnroll } from './reducers/MyEnrollReducer';
-import cookies from 'react-cookies';
 import AppRoutes from './routes';
-import MySpinner from './components/layout/MySpinner';
+import { SWRConfig } from 'swr';
+import Apis from './configs/Apis';
+
+const globalFetcher = async (url) => {
+  const res = await Apis.get(url);
+  return res.data; 
+};
 
 const App = () => {
-  const [user, userDispatch] = useReducer(MyUserReducer, cookies.load('user') || null);
-  const [enroll, enrollDispatch] = useReducer(MyEnrollReducer, initialEnroll);
-
   return (
-    <UserContext.Provider value={[user, userDispatch]}>
-      <EnrollContext.Provider value={[enroll, enrollDispatch]}>
-        <BrowserRouter>
-          <Suspense fallback={<MySpinner />}>
-            <AppRoutes />
-          </Suspense>
-        </BrowserRouter>
-      </EnrollContext.Provider>
-    </UserContext.Provider>
+    <SWRConfig value={{ fetcher: globalFetcher, 
+      revalidateOnFocus: false,
+      shouldRetryOnError: false
+    }}
+    >
+      <BrowserRouter>
+        <AppRoutes />
+      </BrowserRouter>
+    </SWRConfig>
   );
 }
 

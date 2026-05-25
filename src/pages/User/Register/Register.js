@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { BookOpen } from 'lucide-react';
@@ -10,6 +10,8 @@ import StepAvatar from './StepAvatar';
 import Logo from '../../../components/common/Logo';
 import { ROLES } from '../../../constants/roles';
 import { authService } from '../../../services/authService';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { registerSchema } from '../../../validations/authSchema';
 
 const STEP_TITLES = ['Chọn vai trò', 'Thông tin tài khoản', 'Ảnh đại diện'];
 
@@ -19,7 +21,9 @@ const Register = () => {
   const [role, setRole] = useState(null);
   const [error, setError] = useState('');
 
-  const { register, handleSubmit, trigger, formState: { errors, isSubmitting } } = useForm();
+  const { register, handleSubmit, trigger, formState: { errors, isSubmitting } } = useForm({
+    resolver: zodResolver(registerSchema)
+  });
 
   const onSubmit = async (data) => {
     setError('');
@@ -44,6 +48,7 @@ const Register = () => {
         }
       });
     } catch (error) {
+      console.log(error);
       setError(error.response?.data?.message || 'Đăng ký thất bại, vui lòng thử lại.');
       setStep(2);
     }
