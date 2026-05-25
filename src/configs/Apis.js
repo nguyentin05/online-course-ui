@@ -13,6 +13,7 @@ export const endpoints = {
     getAll: '/courses',
     getById: (id) => `/courses/${id}`,
     getLessons:  (id) => `/courses/${id}/lessons`,
+    getProgress: (id) => `/student/courses/${id}/progress`,
   },
   category: {
     getAll: '/categories',
@@ -21,8 +22,10 @@ export const endpoints = {
     myEnrollments: '/student/courses/enrolled',
     enroll: (courseId) => `/student/courses/${courseId}/enroll`,
     cancel: (courseId) => `/student/courses/${courseId}/enroll`,
-  }
-
+  },
+  lessons: {
+    updateProgress: (id) => `/student/lessons/${id}/progress`,
+  },
 };
 
 const Apis = axios.create({

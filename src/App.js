@@ -1,8 +1,5 @@
 import { useReducer } from 'react';
 import { BrowserRouter } from 'react-router-dom';
-import { EnrollContext } from './configs/MyContexts';
-import MyUserReducer from './reducers/MyUserReducer';
-import MyEnrollReducer, { initialEnroll } from './reducers/MyEnrollReducer';
 import AppRoutes from './routes';
 import { SWRConfig } from 'swr';
 import Apis from './configs/Apis';
