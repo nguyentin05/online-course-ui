@@ -1,14 +1,14 @@
 import React, { useContext } from 'react';
 import { Users, DollarSign, BookOpen, Star, PlusCircle } from 'lucide-react';
-import { UserContext } from '../../configs/MyContexts';
 
 // Import các component thống kê
 import StatCard from '../../components/stats/StatCard';
 import RevenueChart from '../../components/stats/RevenueChart';
 import { Link } from 'react-router-dom';
+import useUserStore from '../../store/useUserStore';
 
 export default function Dashboard() {
-  const user = useContext(UserContext);
+  const user = useUserStore((s) => s.user);
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 bg-gray-50 min-h-screen">

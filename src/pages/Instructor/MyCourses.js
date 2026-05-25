@@ -1,17 +1,15 @@
-import React, { useContext, useMemo } from 'react';
+import React, { useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import { Plus, Edit, Film, Users, Star, TrendingUp } from 'lucide-react';
 
-import { UserContext } from '../../configs/MyContexts';
 import useCourses from '../../hooks/useCourses';
 import Button from '../../components/common/Button';
+import useUserStore from '../../store/useUserStore';
 
 export default function MyCourses() {
-  const user = useContext(UserContext);
+  const user = useUserStore((s) => s.user);
   const { courses, isLoading } = useCourses();
 
-  // Lọc ra các khóa học do chính giảng viên này tạo
-  // (Vì đang dùng mock data, ta tạm lấy 3 khóa đầu tiên làm ví dụ nếu ID không khớp)
   const myCreatedCourses = useMemo(() => {
     if (!courses.length) return [];
     const filtered = courses.filter(c => c.instructorId?.id === user?.id);
@@ -22,8 +20,6 @@ export default function MyCourses() {
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 bg-gray-50 min-h-screen">
-      
-      {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
         <div>
           <h1 className="text-2xl font-bold text-gray-900">Khóa học của tôi</h1>
@@ -36,12 +32,10 @@ export default function MyCourses() {
         </Link>
       </div>
 
-      {/* Danh sách khóa học */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {myCreatedCourses.map((course) => (
           <div key={course.id} className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden flex flex-col hover:shadow-md transition-shadow group">
             
-            {/* Ảnh cover & Badge trạng thái */}
             <div className="relative aspect-video bg-gray-100">
               <img src={course.image} alt={course.subject} className="w-full h-full object-cover" />
               <div className="absolute top-3 right-3 px-2.5 py-1 bg-success text-white text-xs font-bold rounded-full shadow-sm">
@@ -49,14 +43,12 @@ export default function MyCourses() {
               </div>
             </div>
 
-            {/* Thông tin khóa học */}
             <div className="p-5 flex-1 flex flex-col">
               <div className="text-xs font-bold text-brand mb-2">{course.categoryId?.name || 'Danh mục chung'}</div>
               <h3 className="text-lg font-bold text-gray-900 leading-tight mb-4 line-clamp-2" title={course.subject}>
                 {course.subject}
               </h3>
 
-              {/* Thống kê nhanh */}
               <div className="grid grid-cols-2 gap-3 mb-6 mt-auto">
                 <div className="bg-gray-50 p-2 rounded-lg flex items-center gap-2">
                   <Users size={16} className="text-blue-500" />
@@ -72,7 +64,6 @@ export default function MyCourses() {
                 </div>
               </div>
 
-              {/* Các nút Hành động */}
               <div className="grid grid-cols-2 gap-3 pt-4 border-t border-gray-100">
                 <Link to={`/instructor/course/edit/${course.id}`} className="flex items-center justify-center gap-2 py-2 px-3 bg-gray-50 text-gray-700 rounded-xl text-sm font-medium hover:bg-gray-100 hover:text-brand transition-colors">
                   <Edit size={16} /> Sửa thông tin
