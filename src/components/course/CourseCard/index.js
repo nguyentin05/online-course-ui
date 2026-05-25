@@ -25,6 +25,8 @@ const CourseCard = ({ course, children, className = '' }) => {
     duration: course?.duration ?? 0,
     instructorId: course?.instructorId ?? null,
     categoryId: course?.categoryId ?? null,
+    categoryName: course?.categoryName ?? 'Chưa phân loại',
+    instructorName: course?.instructorName ?? 'Giảng viên ẩn danh',
   };
 
   const navigateWithTransition = useViewTransition();

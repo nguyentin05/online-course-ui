@@ -2,17 +2,17 @@ import React from 'react';
 import Button from '../../common/Button';
 import useEnrolledCourses from '../../../hooks/useEnrolledCourses';
 import { useCourseContext } from '.';
-import useUser from '../../../hooks/useUser';
 import { useNavigate } from 'react-router-dom';
 import { CheckCircle } from 'lucide-react';
 import useOptimistic from '../../../hooks/useOptimistic';
+import useUserStore from '../../../store/useUserStore';
 
 const EnrollButton = () => {
   const course = useCourseContext();
-  const { user } = useUser();
+  const user = useUserStore((s) => s.user);
   const { enrolledCourses, enrollCourse } = useEnrolledCourses();
   const nav = useNavigate();
-  const isEnrolled = enrolledCourses.some(c => c.id === course.id);
+  const isEnrolled = enrolledCourses.some(c => c.course?.id?.toString() === course.id?.toString());
   const [optimisticEnrolled, updateOptimistically] = useOptimistic(isEnrolled);
 
   const handleClick = async (e) => {

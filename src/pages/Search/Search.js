@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useEffect } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import { Search as SearchIcon, SlidersHorizontal, ChevronLeft, ChevronRight, X } from 'lucide-react';
 
 import Input from '../../components/common/Input';
