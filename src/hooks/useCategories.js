@@ -1,31 +1,14 @@
-import { useState, useEffect } from 'react';
-import mockCategories from '../mock/data.mock.categories.json';
-import { categoryService } from '../services/categoryService';
+import useSWR from 'swr';
+import { endpoints } from '../configs/Apis';
 
 const useCategories = () => {
-  const [categories, setCategories] = useState([]);
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState(null);
+  const { data, error, isLoading } = useSWR(endpoints.category.getAll);
 
-  useEffect(() => {
-    const fetchCategories = async () => {
-      setIsLoading(true);
-      try {
-        const res = await categoryService.getAll();
-        const data = res.data.data;
-
-        setCategories(data);
-      } catch (error) {
-        setError('Không thể tải danh mục');
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    fetchCategories();
-  }, []);
-
-  return { categories, isLoading, error };
+  return { 
+    categories: data || [], 
+    isLoading, 
+    error: error ? 'Không thể tải danh mục' : null
+  };
 }
 
 export default useCategories;

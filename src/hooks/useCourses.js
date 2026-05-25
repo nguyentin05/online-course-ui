@@ -1,62 +1,41 @@
-import { useState, useEffect } from 'react';
-import Apis, { endpoints } from '../configs/Apis'
+import useSWR from 'swr';
 import { PAGE_SIZE } from '../constants/pagination';
-import { courseService } from '../services/courseService';
+import Apis, { endpoints } from '../configs/Apis';
 
+const fetcherWithParams = async ([url, params]) => {
+  const res = await Apis.get(url, { params });
+  return res; 
+};
 
 const useCourses = (filters = {}) => {
   const {
-    keyword = '',
-    instructor = '',
-    categoryId = null,
-    minPrice = null,
-    maxPrice = null,
-    sortBy = 'subject',
-    sortDir = 'asc',
-    page = 0,
-    size = PAGE_SIZE,
-    limit = null
+    keyword = '', instructor = '', categoryId = null,
+    minPrice = null, maxPrice = null, sortBy = 'subject',
+    sortDir = 'asc', page = 0, size = PAGE_SIZE, limit = null
   } = filters;
 
-  const [courses, setCourses] = useState([]);
-  const [totalPages, setTotalPages] = useState(0);
-  const [totalElements, setTotalElements] = useState(0);
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const params = {
+    ...(keyword && { keyword }),
+    ...(instructor && { instructor }),
+    ...(categoryId && { categoryId }),
+    ...(minPrice && { minPrice }),
+    ...(maxPrice && { maxPrice }),
+    sortBy, sortDir, page, size: limit ?? size
+  };
 
-  useEffect(() => {
-    const fetchCourses = async () => {
-      setIsLoading(true);
-      setError(null);
-      try {
-        const params = {};
-        if (keyword) params.keyword = keyword;
-        if (instructor) params.instructor = instructor;
-        if (categoryId) params.categoryId = categoryId;
-        if (minPrice) params.minPrice = minPrice;
-        if (maxPrice) params.maxPrice = maxPrice;
-        params.sortBy = sortBy;
-        params.sortDir = sortDir;
-        params.page = page;
-        params.size = limit ?? size;
+  const { data, error, isLoading } = useSWR(
+    [endpoints.courses.getAll, params],
+    fetcherWithParams,
+    { keepPreviousData: true }
+  );
 
-        const res = await courseService.getAll(params);
-        const data = res.data.data;
-
-        setCourses(data.content);
-        setTotalPages(data.totalPages);
-        setTotalElements(data.totalElements);
-      } catch (err) {
-        setError('Không thể tải danh sách khóa học');
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    fetchCourses();
-  }, [keyword, instructor, categoryId, minPrice, maxPrice, sortBy, sortDir, page, size, limit]);
-
-  return { courses, totalPages, totalElements, isLoading, error };
+  return { 
+    courses: data?.data?.content || [], 
+    totalPages: data?.data?.totalPages || 0, 
+    totalElements: data?.data?.totalElements || 0, 
+    isLoading, 
+    error: error ? 'Không thể tải danh sách khóa học' : null 
+  };
 }
 
 export default useCourses;

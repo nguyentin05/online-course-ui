@@ -1,51 +1,48 @@
-import { useContext, useEffect, useState } from 'react';
-import { EnrollContext, EnrollDispatchContext, UserContext } from '../configs/MyContexts';
+import useSWR from 'swr';
+import Apis, { endpoints } from '../configs/Apis';
+import useUserStore from '../store/useUserStore';
 
 const useEnrolledCourses = () => {
-  const [enroll, enrollDispatch] = useContext(EnrollContext);
-  const [user] = useContext(UserContext);
-  const [isLoading, setIsLoading] = useState(false);
+  const isAuth = useUserStore((s) => s.token !== null); 
+  const { data, error, isLoading, mutate } = useSWR(
+    isAuth ? endpoints.enrollment.myEnrollments : null
+  );
 
-  useEffect(() => {
-    if (!user || enroll.enrolledCourses.length > 0) return;
+  const enrolledCourses = data || [];
 
-    const fetchMyCourses = async () => {
-      setIsLoading(true);
-      try {
-        // Giả lập gọi API lấy danh sách khóa học của User:
-        // const res = await Api.get(endpoints.getEnrolledCourses);
-        await new Promise(resolve => setTimeout(resolve, 800));
-        
-        const mockData = [
-          { id: 1, subject: 'Lập trình ReactJS Cơ bản', image: '...' }
-        ];
-        
-        enrollDispatch({ type: 'SET_ENROLLED_COURSES', payload: mockData });
-      } catch (error) {
-        console.error("Lỗi khi tải khóa học của tôi", error);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    fetchMyCourses();
-  }, [user, enroll.enrolledCourses.length]);
-
-  const enrollCourse = async (course) => {
+  const enrollCourse = async (courseId) => {
     try {
-      enrollDispatch({ type: 'ENROLL_COURSE', payload: course });
-      return true;
-    } catch (error) {
-      console.error("Lỗi đăng ký khóa học:", error);
-      return false;
+      const res = await Apis.post(endpoints.enrollment.enroll(courseId));
+      mutate(); 
+      
+      return { success: true, data: res.data };
+    } catch (err) {
+      console.error("Lỗi đăng ký:", err);
+      return { 
+        success: false, 
+        message: err.response?.data?.message || "Lỗi hệ thống" 
+      };
     }
   };
 
-  const unenrollCourse = async (courseId) => {
-    enrollDispatch({ type: 'UNENROLL_COURSE', payload: { id: courseId } });
+  const cancelEnrollment = async (courseId) => {
+    try {
+      await Apis.delete(endpoints.enrollment.cancel(courseId));
+      mutate();
+      return { success: true };
+    } catch (err) {
+      console.error("Lỗi hủy đăng ký:", err);
+      return { success: false };
+    }
   };
 
-  return { enrolledCourses: enroll.enrolledCourses, isLoading, enrollCourse, unenrollCourse };
-}
+  return {
+    enrolledCourses,
+    isLoading,
+    error,
+    enrollCourse,
+    cancelEnrollment
+  };
+};
 
 export default useEnrolledCourses;
