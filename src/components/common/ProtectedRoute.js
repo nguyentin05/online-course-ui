@@ -1,9 +1,10 @@
 import React, { useContext } from 'react';
 import { Navigate, Outlet } from 'react-router-dom';
 import { UserContext } from '../../configs/MyContexts';
+import useUserStore from '../../store/useUserStore';
 
-export default function ProtectedRoute({ allowedRoles = [] }) {
-  const [user] = useContext(UserContext);
+const ProtectedRoute = ({ allowedRoles = [] }) => {
+  const user = useUserStore((s) => s.user);
 
   if (!user) {
     return <Navigate to="/login" replace />;
@@ -16,3 +17,5 @@ export default function ProtectedRoute({ allowedRoles = [] }) {
 
   return <Outlet />;
 }
+
+export default ProtectedRoute;

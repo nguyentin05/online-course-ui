@@ -5,11 +5,12 @@ import Input from '../common/Input';
 import Button from '../common/Button';
 import useDebounce from '../../hooks/useDebounce';
 import mockCourses from '../../mock/data.mock.courses.json';
-import useUser from '../../hooks/useUser';
 import useTheme from '../../hooks/useTheme';
+import useUserStore from '../../store/useUserStore';
 
 const Header = () => {
-  const { user, logout } = useUser();
+  const user = useUserStore((s) => s.user);
+  const logout = useUserStore((s) => s.logout);
   const [kw, setKw] = useState('');
   const [suggestions, setSuggestions] = useState([]);
   const [showDrop, setShowDrop] = useState(false);
@@ -128,7 +129,7 @@ const Header = () => {
                   )}
                 </div>
 
-                <span className="text-sm font-bold text-gray-700 hidden sm:block">{user.fullName}</span>
+                <span className="text-sm font-bold text-gray-700 hidden sm:block">{user.username}</span>
                 <img src={user.avatar} alt="Avatar" className="w-10 h-10 rounded-full border-2 border-brand/20 bg-gray-50" />
                 <button onClick={logout} className="p-2 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-full transition-colors" title="Đăng xuất">
                   <LogOut size={18} />
