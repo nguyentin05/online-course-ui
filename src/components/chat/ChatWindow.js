@@ -3,27 +3,24 @@ import { MessageCircle, X } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 import useChat from '../../hooks/useChat';
-import { UserContext } from '../../configs/MyContexts';
 import ChatMessage from './ChatMessage';
 import ChatInput from './ChatInput';
+import useUserStore from '../../store/useUserStore';
 
 export default function ChatWindow() {
   const [isOpen, setIsOpen] = useState(false);
   
-  const user = useContext(UserContext);
+  const user = useUserStore((s) => s.user);
   
-  // Kết nối vào phòng chat
   const { messages, isLoading, sendMessage } = useChat('edu_global_room');
   const messagesEndRef = useRef(null);
 
-  // Tự động cuộn
   useEffect(() => {
     if (isOpen) {
       messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
     }
   }, [messages, isOpen]);
 
-  // Hàm xử lý gửi tin nhắn được truyền xuống ChatInput
   const handleSendMessage = (text) => {
     if (!user) return;
     sendMessage(user.id, user.fullName, text);

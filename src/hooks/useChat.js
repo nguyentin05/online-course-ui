@@ -1,24 +1,24 @@
-import { useEffect, useCallback, useReducer } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { ref, onValue, push, set } from 'firebase/database';
 import { db } from '../configs/firebase';
 
-// 1. Import Reducer vào Hook
-import MyChatReducer, { initialChatState } from '../reducers/MyChatReducer';
-
 export default function useChat(roomId) {
-  // 2. Sử dụng useReducer thay cho useState
-  const [state, dispatch] = useReducer(MyChatReducer, initialChatState);
+  // 1. Thay thế cỗ máy useReducer cồng kềnh bằng 3 state cơ bản
+  const [messages, setMessages] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState(null);
 
   // Lắng nghe tin nhắn Realtime
   useEffect(() => {
     if (!roomId) return;
 
-    // Báo cho UI biết đang tải dữ liệu
-    dispatch({ type: 'FETCH_MESSAGES_START' });
+    // Khởi tạo trạng thái tải
+    setIsLoading(true);
+    setError(null);
 
     const messagesRef = ref(db, `chats/${roomId}/messages`);
 
-    // Firebase onValue sẽ tự động chạy lại khi có biến động dữ liệu
+    // 2. Firebase onValue tự động bắn data mới mỗi khi có người chat
     const unsubscribe = onValue(messagesRef, 
       (snapshot) => {
         const data = snapshot.val();
@@ -29,24 +29,22 @@ export default function useChat(roomId) {
           }));
           
           messageList.sort((a, b) => a.timestamp - b.timestamp);
-          
-          // Ném danh sách lấy được từ Server vào Reducer
-          dispatch({ type: 'FETCH_MESSAGES_SUCCESS', payload: messageList });
+          setMessages(messageList);
         } else {
-          // Phòng chat chưa có tin nhắn nào
-          dispatch({ type: 'FETCH_MESSAGES_SUCCESS', payload: [] });
+          setMessages([]); // Phòng trống
         }
+        setIsLoading(false); // Xong thì tắt loading
       }, 
-      (error) => {
-        // Nếu kết nối Firebase bị lỗi
-        dispatch({ type: 'FETCH_MESSAGES_ERROR', payload: error.message });
+      (err) => {
+        setError(err.message);
+        setIsLoading(false);
       }
     );
 
-    // Dọn dẹp: Ngắt kết nối và xóa sạch chat cũ khi chuyển sang phòng khác
+    // 3. Dọn dẹp bộ nhớ khi thoát phòng chat
     return () => {
       unsubscribe();
-      dispatch({ type: 'CLEAR_CHAT' });
+      setMessages([]); 
     };
   }, [roomId]);
 
@@ -55,10 +53,10 @@ export default function useChat(roomId) {
     if (!text.trim() || !roomId) return;
 
     const messagesRef = ref(db, `chats/${roomId}/messages`);
-    const newMessageRef = push(messagesRef); // Sinh ra ID mới từ Firebase
+    const newMessageRef = push(messagesRef);
 
     // TỐI ƯU UX (Optimistic UI):
-    // Đẩy ngay tin nhắn vào Reducer để hiện lên màn hình lập tức, không độ trễ!
+    // Ép mảng cũ cộng thêm tin nhắn mới ngay lập tức
     const newMessage = {
       id: newMessageRef.key,
       senderId,
@@ -66,22 +64,26 @@ export default function useChat(roomId) {
       text,
       timestamp: Date.now()
     };
-    dispatch({ type: 'ADD_MESSAGE', payload: newMessage });
+    setMessages(prev => [...prev, newMessage]);
 
-    // Cùng lúc đó, ngầm lưu xuống Firebase
-    await set(newMessageRef, {
-      senderId,
-      senderName,
-      text,
-      timestamp: newMessage.timestamp
-    });
+    // Ngầm lưu xuống DB, lỗi thì in ra log
+    try {
+      await set(newMessageRef, {
+        senderId,
+        senderName,
+        text,
+        timestamp: newMessage.timestamp
+      });
+    } catch (err) {
+      console.error("Lỗi đồng bộ tin nhắn:", err);
+    }
   }, [roomId]);
 
-  // 3. Trả về đúng định dạng gốc để ChatWindow không bị ảnh hưởng
+  // Trả về dữ liệu chuẩn mực
   return { 
-    messages: state.messages, 
-    isLoading: state.isLoading, 
-    error: state.error,
+    messages, 
+    isLoading, 
+    error,
     sendMessage 
   };
 }
