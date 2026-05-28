@@ -14,6 +14,7 @@ export const endpoints = {
     getById: (id) => `/courses/${id}`,
     getLessons:  (id) => `/courses/${id}/lessons`,
     getProgress: (id) => `/student/courses/${id}/progress`,
+    compare: '/courses/compare',
   },
   category: {
     getAll: '/categories',
@@ -25,6 +26,18 @@ export const endpoints = {
   },
   lessons: {
     updateProgress: (id) => `/student/lessons/${id}/progress`,
+  },
+  instructor: {
+    myCourses: '/instructor/courses',
+    create: '/instructor/courses',
+    update: (id) => `/instructor/courses/${id}`,
+    delete: (id) => `/instructor/courses/${id}`,
+    students: (id) => `/instructor/courses/${id}/students`,
+    progress: (id) => `/instructor/courses/${id}/progress`,
+  },
+  payments: {
+    checkout: (courseId) => `/student/courses/${courseId}/checkout`,
+    status: (orderId) => `/student/payments/${orderId}`,
   },
 };
 
