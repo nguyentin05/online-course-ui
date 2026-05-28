@@ -4,7 +4,7 @@ import Apis, { endpoints } from '../configs/Apis';
 
 const fetcherWithParams = async ([url, params]) => {
   const res = await Apis.get(url, { params });
-  return res; 
+  return res.data;
 };
 
 const useCourses = (filters = {}) => {
@@ -23,17 +23,18 @@ const useCourses = (filters = {}) => {
     sortBy, sortDir, page, size: limit ?? size
   };
 
-  const { data, error, isLoading } = useSWR(
+  const { data, error, isLoading, isValidating } = useSWR(
     [endpoints.courses.getAll, params],
     fetcherWithParams,
     { keepPreviousData: true }
   );
 
   return { 
-    courses: data?.data?.content || [], 
-    totalPages: data?.data?.totalPages || 0, 
-    totalElements: data?.data?.totalElements || 0, 
-    isLoading, 
+    courses: data?.content || [], 
+    totalPages: data?.totalPages || 0, 
+    totalElements: data?.totalElements || 0, 
+    isLoading,
+    isValidating,
     error: error ? 'Không thể tải danh sách khóa học' : null 
   };
 }

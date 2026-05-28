@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { Search, BookOpen, LogOut, Sun, Moon } from 'lucide-react';
 import Input from '../common/Input';
@@ -95,7 +95,6 @@ const Header = () => {
                     </div>
                   )}
 
-                  {/* Render kết quả thật */}
                   {!isLoading && suggestions?.length > 0 && suggestions.map(course => (
                     <button key={course.id} onMouseDown={() => handleSelect(course.id)}
                       className="w-full flex items-center gap-3 px-4 py-3 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors text-left">
@@ -106,7 +105,6 @@ const Header = () => {
                     </button>
                   ))}
 
-                  {/* Trạng thái Empty */}
                   {!isLoading && suggestions?.length === 0 && debounce && (
                     <div className="px-4 py-3 text-sm text-gray-500 text-center">
                       Không tìm thấy khóa học nào phù hợp.

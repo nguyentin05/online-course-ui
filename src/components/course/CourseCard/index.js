@@ -11,10 +11,7 @@ import useViewTransition from '../../../hooks/useViewTransition';
 
 const CourseContext = createContext();
 
-export const useCourseContext = () => {
-  const context = useContext(CourseContext);
-  return context;
-}
+export const useCourseContext = () => useContext(CourseContext);
 
 const CourseCard = ({ course, children, className = '' }) => {
   const normalizedCourse = {

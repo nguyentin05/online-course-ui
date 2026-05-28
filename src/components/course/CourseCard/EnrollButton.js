@@ -30,7 +30,7 @@ const EnrollButton = () => {
     }
     await updateOptimistically(
       true,
-      () => enrollCourse(course)
+      () => enrollCourse(course.id)
     );
   };
 

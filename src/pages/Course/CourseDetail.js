@@ -1,13 +1,13 @@
 import React, { useState, useMemo } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { Clock, PlayCircle, ShieldCheck, CheckCircle } from 'lucide-react';
+import { Clock, PlayCircle, ShieldCheck, CheckCircle, Loader2, ChevronDown } from 'lucide-react';
 import useCourseDetail from '../../hooks/useCourseDetail';
-import useCourses from '../../hooks/useCourses';
 import Button from '../../components/common/Button';
 import PaymentModal from '../../components/payment/PaymentModal';
 import useEnrolledCourses from '../../hooks/useEnrolledCourses';
 import AnimatedPage from '../../components/AnimatedPage';
 import useCourseLessons from '../../hooks/useCourseLessons';
+import Apis, { endpoints } from '../../configs/Apis';
 
 const CourseDetail = () => {
   const { courseId } = useParams();
@@ -17,7 +17,7 @@ const CourseDetail = () => {
   const isEnrolled = enrolledCourses.some(c => c.course?.id?.toString() === courseId);
   const [isCancelling, setIsCancelling] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const { lessons, isLoading: isLoadingLessons } = useCourseLessons(courseId);
+  const { lessons, isLoading: isLoadingLessons, isLoadingMore, isReachingEnd, loadMore } = useCourseLessons(courseId, 10);
 
   if (isLoading) return (
     <AnimatedPage>
@@ -34,14 +34,19 @@ const CourseDetail = () => {
   const hours = Math.floor(course.duration / 60);
   const minutes = course.duration % 60;
 
-  const handleEnrollClick = () => {
-    if (course.price > 0) {
-      // setIsModalOpen(true);
-      alert("Tính năng thanh toán đang được tích hợp. Vui lòng quay lại sau nhé!");
-    } else {
-      processEnrollment();  
+  const handleEnrollClick = async () => {
+  if (course.price > 0) {
+    try {
+      const res = await Apis.post(endpoints.payments.checkout(courseId));
+      const { payUrl } = res.data;
+      window.location.href = payUrl;
+    } catch (err) {
+      alert('Không thể tạo thanh toán, vui lòng thử lại.');
     }
-  };
+  } else {
+    processEnrollment();
+  }
+};
 
   const handleCancelEnrollment = async () => {
     if (window.confirm("Bạn có chắc chắn muốn hủy đăng ký khóa học này?")) {
@@ -106,24 +111,49 @@ const CourseDetail = () => {
               <h2 className="text-2xl font-bold text-gray-900 mb-6 border-b border-gray-100 pb-4">Nội dung giảng dạy</h2>
               <div className="space-y-4">
                 {isLoadingLessons ? (
-                  <div className="text-center py-8 text-gray-500 animate-pulse">
-                    Đang tải danh sách bài học...
+                  <div className="text-center py-8 text-gray-500 flex flex-col items-center justify-center gap-2">
+                    <Loader2 className="animate-spin text-brand" size={24} />
+                    <span>Đang tải danh sách bài học...</span>
                   </div>
                 ) : lessons.length === 0 ? (
                   <div className="text-center py-8 text-gray-500 bg-gray-50 rounded-xl border border-dashed border-gray-200">
                     Khóa học này hiện chưa có bài học nào.
                   </div>
                 ) : (
-                  lessons.map((lesson) => (
-                    <div key={lesson.id} className="flex items-center p-4 border border-gray-100 rounded-xl hover:bg-gray-50 transition-colors">
-                      <div className="flex items-center gap-3">
-                        <PlayCircle size={20} className="text-gray-400" />
-                        <span className="font-medium text-gray-700">
-                          Bài {lesson.lessonOrder}: {lesson.subject || "Chưa có tên bài"}
-                        </span>
+                  <>
+                    {lessons.map((lesson) => (
+                      <div key={lesson.id} className="flex items-center justify-between p-4 border border-gray-100 rounded-xl hover:bg-gray-50 transition-colors group">
+                        <div className="flex items-center gap-3">
+                          <PlayCircle size={20} className="text-brand/70 group-hover:text-brand transition-colors" />
+                          <span className="font-medium text-gray-700">
+                            Bài {lesson.lessonOrder}: {lesson.subject || "Chưa có tên bài"}
+                          </span>
+                        </div>
+                        <div className="text-sm text-gray-400">
+                        </div>
                       </div>
-                    </div>
-                  ))
+                    ))}
+
+                    {!isReachingEnd && (
+                      <div className="pt-4 flex justify-center border-t border-gray-50">
+                        <button 
+                          onClick={() => loadMore()}
+                          disabled={isLoadingMore}
+                          className="flex items-center gap-2 px-6 py-2.5 bg-gray-100 text-gray-700 hover:bg-gray-200 rounded-full font-medium text-sm transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                        >
+                          {isLoadingMore ? (
+                            <>
+                              <Loader2 size={16} className="animate-spin" /> Đang tải thêm...
+                            </>
+                          ) : (
+                            <>
+                              Xem thêm bài học <ChevronDown size={16} />
+                            </>
+                          )}
+                        </button>
+                      </div>
+                    )}
+                  </>
                 )}
               </div>
             </div>
