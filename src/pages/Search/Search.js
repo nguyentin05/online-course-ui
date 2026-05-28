@@ -1,5 +1,5 @@
 import { useState, useMemo, useEffect } from 'react';
-import { Search as SearchIcon, SlidersHorizontal, ChevronLeft, ChevronRight, X } from 'lucide-react';
+import { Search as SearchIcon, SlidersHorizontal, ChevronLeft, ChevronRight, X, Link, BarChart2 } from 'lucide-react';
 
 import Input from '../../components/common/Input';
 import CourseGrid from '../../components/course/CourseGrid';
@@ -8,8 +8,8 @@ import useDebounce from '../../hooks/useDebounce';
 import useCategories from '../../hooks/useCategories'
 import Select from '../../components/common/select';
 import { motion } from 'framer-motion';
-
-const ITEMS_PER_PAGE = 20;
+import { ScaleLoader } from 'react-spinners';
+import { useNavigate } from 'react-router-dom';
 
 const Search = () => {
   const [kw, setKw] = useState('');
@@ -25,6 +25,7 @@ const Search = () => {
   const debouncedInstructor = useDebounce(instructor, 500);
   const debouncedMinPrice = useDebounce(minPrice, 500);
   const debouncedMaxPrice = useDebounce(maxPrice, 500);
+  const nav = useNavigate();
 
   const { categories } = useCategories();
 
@@ -40,7 +41,7 @@ const Search = () => {
     { value: 'price-desc',   label: 'Giá: Cao → Thấp' },
   ];
 
-  const { courses, totalPages, totalElements, isLoading, error } = useCourses({
+  const { courses, totalPages, totalElements, isLoading, error, isValidating } = useCourses({
     keyword: debouncedKeyword,
     instructor: debouncedInstructor,
     categoryId,
@@ -84,6 +85,11 @@ const Search = () => {
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      {isValidating && !isLoading && (
+        <div className="fixed top-4 right-4 z-50 bg-white rounded-full p-2 shadow-lg border border-gray-100">
+          <ScaleLoader color="#4f46e5" height={16} width={3} margin={1} />
+        </div>
+      )}
 
       <div className="bg-white p-4 rounded-2xl shadow-sm border border-gray-100 mb-4 flex gap-3">
         <div className="flex-1">
@@ -202,10 +208,31 @@ const Search = () => {
       <motion.div
         layout
         transition={{ duration: 0.2 }}
-        className="mb-4 text-gray-600 font-medium"
+        className="mb-4 flex flex-wrap items-center justify-between gap-4"
       >
-        Tìm thấy <span className="text-brand font-bold">{totalElements}</span> khóa học
-        {resultLabel && <span> {resultLabel}</span>}
+        <div className="text-gray-600 font-medium">
+          Tìm thấy <span className="text-brand font-bold">{totalElements}</span> khóa học
+          {resultLabel && <span> {resultLabel}</span>}
+        </div>
+
+        {categoryId ? (
+          <button
+            onClick={() => nav(`/compare?categoryId=${categoryId}`)}
+            className="flex-shrink-0 inline-flex items-center gap-2 px-5 py-2.5 bg-brand text-white font-bold rounded-xl hover:bg-brand-dark hover:shadow-lg hover:-translate-y-0.5 transition-all duration-200 cursor-pointer whitespace-nowrap"
+          >
+            <BarChart2 size={18} />
+            So sánh Top khóa học
+          </button>
+        ) : (
+          <button
+            disabled
+            className="flex-shrink-0 inline-flex items-center gap-2 px-5 py-2.5 bg-gray-100 text-gray-400 font-bold rounded-xl cursor-not-allowed whitespace-nowrap"
+            title="Mở bộ lọc và chọn một danh mục để có thể so sánh"
+          >
+            <BarChart2 size={18} />
+            So sánh Top khóa học
+          </button>
+        )}
       </motion.div>
       <motion.div layout transition={{ duration: 0.2 }}>
         <CourseGrid courses={courses} isLoading={isLoading} skeletonCount={8} />
