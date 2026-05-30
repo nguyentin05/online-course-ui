@@ -2,9 +2,9 @@ import React from 'react';
 
 export default function Skeleton({ 
   className = '', 
-  variant = 'rectangular' // 'rectangular' (hình chữ nhật) | 'circular' (hình tròn - avatar)
+  variant = 'rectangular'
 }) {
-  const baseClass = "animate-pulse bg-gray-200"; // Hiệu ứng nhấp nháy + màu nền xám
+  const baseClass = "animate-pulse bg-gray-200";
   
   const variants = {
     rectangular: "rounded-lg",

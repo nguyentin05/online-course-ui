@@ -11,14 +11,14 @@ const Register = React.lazy(() => import('../pages/User/Register/Register'));
 const Search = React.lazy(() => import('../pages/Search/Search'));
 const CourseDetail = React.lazy(() => import('../pages/Course/CourseDetail'));
 const CourseCompare = React.lazy(() => import('../pages/Course/CourseCompare'));
-const Profile = React.lazy(() => import('../pages/User/Profile'));
+// const Profile = React.lazy(() => import('../pages/User/Profile'));
 const MyLearning = React.lazy(() => import('../pages/User/MyLearning'));
 const CourseLesson = React.lazy(() => import('../pages/Course/CourseLesson'));
 const InsDashboard = React.lazy(() => import('../pages/Instructor/Dashboard'));
 const MyCourses = React.lazy(() => import('../pages/Instructor/MyCourses'));
 const CourseEditor = React.lazy(() => import('../pages/Instructor/CourseEditor'));
 const LessonEditor = React.lazy(() => import('../pages/Instructor/LessonEditor'));
-const TrackStudents = React.lazy(() => import('../pages/Instructor/TrackStudents'));
+// const TrackStudents = React.lazy(() => import('../pages/Instructor/TrackStudents'));
 const PaymentReturn = React.lazy(() => import('../pages/Payment/PaymentReturn'));
 
 const SuspenseWrapper = () => (
@@ -45,7 +45,7 @@ const AppRoutes = () => {
             <Route path="/compare" element={<CourseCompare />} />
 
             <Route element={<ProtectedRoute />}>
-              <Route path="/profile" element={<Profile />} />
+              {/* <Route path="/profile" element={<Profile />} /> */}
               <Route path="/my-learning" element={<MyLearning />} />
             </Route>
 
@@ -55,7 +55,7 @@ const AppRoutes = () => {
               <Route path="/instructor/course/create" element={<CourseEditor />} />
               <Route path="/instructor/course/edit/:courseId" element={<CourseEditor />} />
               <Route path="/instructor/course/:courseId/lessons" element={<LessonEditor />} />
-              <Route path="/instructor/course/:courseId/students" element={<TrackStudents />} />
+              {/* <Route path="/instructor/course/:courseId/students" element={<TrackStudents />} /> */}
             </Route>
           </Route>
         </Route>

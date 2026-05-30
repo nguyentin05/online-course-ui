@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Send } from 'lucide-react';
 import Input from '../common/Input';
 
-export default function ChatInput({ onSendMessage, disabled }) {
+const ChatInput = ({ onSendMessage, disabled }) => {
   const [text, setText] = useState('');
 
   const handleSubmit = (e) => {
@@ -10,7 +10,7 @@ export default function ChatInput({ onSendMessage, disabled }) {
     if (!text.trim() || disabled) return;
     
     onSendMessage(text);
-    setText(''); // Reset input sau khi gửi
+    setText('');
   };
 
   return (
@@ -34,3 +34,5 @@ export default function ChatInput({ onSendMessage, disabled }) {
     </form>
   );
 }
+
+export default ChatInput;

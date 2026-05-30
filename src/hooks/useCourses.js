@@ -1,11 +1,7 @@
 import useSWR from 'swr';
+import { endpoints } from '../configs/Apis';
+import { fetcherWithParams } from '../utils/swrUtils';
 import { PAGE_SIZE } from '../constants/pagination';
-import Apis, { endpoints } from '../configs/Apis';
-
-const fetcherWithParams = async ([url, params]) => {
-  const res = await Apis.get(url, { params });
-  return res.data;
-};
 
 const useCourses = (filters = {}) => {
   const {

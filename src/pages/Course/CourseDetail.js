@@ -1,9 +1,8 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { Clock, PlayCircle, ShieldCheck, CheckCircle, Loader2, ChevronDown } from 'lucide-react';
 import useCourseDetail from '../../hooks/useCourseDetail';
 import Button from '../../components/common/Button';
-import PaymentModal from '../../components/payment/PaymentModal';
 import useEnrolledCourses from '../../hooks/useEnrolledCourses';
 import AnimatedPage from '../../components/AnimatedPage';
 import useCourseLessons from '../../hooks/useCourseLessons';
@@ -12,11 +11,10 @@ import Apis, { endpoints } from '../../configs/Apis';
 const CourseDetail = () => {
   const { courseId } = useParams();
   const nav = useNavigate();
-  const { course, isLoading, error } = useCourseDetail(courseId);
+  const { course, isLoading } = useCourseDetail(courseId);
   const { enrolledCourses, enrollCourse, cancelEnrollment } = useEnrolledCourses();
   const isEnrolled = enrolledCourses.some(c => c.course?.id?.toString() === courseId);
   const [isCancelling, setIsCancelling] = useState(false);
-  const [isModalOpen, setIsModalOpen] = useState(false);
   const { lessons, isLoading: isLoadingLessons, isLoadingMore, isReachingEnd, loadMore } = useCourseLessons(courseId, 10);
 
   if (isLoading) return (
@@ -65,8 +63,6 @@ const CourseDetail = () => {
   };
 
   const processEnrollment = async () => {
-    setIsModalOpen(false);
-
     const result = await enrollCourse(courseId);
     
     if (result.success) {
@@ -209,13 +205,6 @@ const CourseDetail = () => {
 
           </div>
         </div>
-
-        <PaymentModal 
-          isOpen={isModalOpen} 
-          onClose={() => setIsModalOpen(false)}
-          onConfirm={() => processEnrollment('payment_gateway')}
-          course={course}
-        />
       </div>
     </AnimatedPage>
   );

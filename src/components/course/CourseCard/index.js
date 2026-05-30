@@ -5,8 +5,6 @@ import Instructor from './Instructor';
 import Meta from './Meta';
 import Price from './Price';
 import EnrollButton from './EnrollButton';
-import './CourseCard.css';
-import { Link } from 'react-router-dom';
 import useViewTransition from '../../../hooks/useViewTransition';
 
 const CourseContext = createContext();
@@ -27,11 +25,6 @@ const CourseCard = ({ course, children, className = '' }) => {
   };
 
   const navigateWithTransition = useViewTransition();
-
-  const handleCardClick = () => {
-    navigateWithTransition(`/course/${course.id}`);
-  };
-
   return (
     <CourseContext.Provider value={normalizedCourse}>
       <div 

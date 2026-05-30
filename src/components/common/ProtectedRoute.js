@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React from 'react';
 import { Navigate, Outlet } from 'react-router-dom';
 import useUserStore from '../../store/useUserStore';
 
@@ -10,7 +10,6 @@ const ProtectedRoute = ({ allowedRoles = [] }) => {
   }
 
   if (allowedRoles.length > 0 && !allowedRoles.includes(user.role)) {
-    // Có thể thay bằng một trang Component <AccessDenied />
     return <Navigate to="/" replace />; 
   }
 

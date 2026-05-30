@@ -1,5 +1,4 @@
 import axios from 'axios';
-import cookies from 'react-cookies'
 import useUserStore from '../store/useUserStore';
 
 const BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:8080/course-app/api/v1';
@@ -39,6 +38,10 @@ export const endpoints = {
     checkout: (courseId) => `/student/courses/${courseId}/checkout`,
     status: (orderId) => `/student/payments/${orderId}`,
   },
+  chat: {
+    createToken: '/chat/firebase-token',
+    join: (courseId) => `/chat/courses/${courseId}/join`
+  }
 };
 
 const Apis = axios.create({

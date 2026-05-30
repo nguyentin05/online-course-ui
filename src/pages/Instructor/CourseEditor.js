@@ -6,7 +6,6 @@ import { ArrowLeft, Save, Image as ImageIcon, UploadCloud, Video } from 'lucide-
 import Input from '../../components/common/Input';
 import Button from '../../components/common/Button';
 import useInstructorCourses from '../../hooks/useInstructorCourses';
-import useCourseDetail from '../../hooks/useCourseDetail';
 import useCategories from '../../hooks/useCategories'; 
 
 const CourseEditor = () => {
