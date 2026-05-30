@@ -1,6 +1,6 @@
 import React from 'react';
 
-export default function ChatMessage({ message, isMe }) {
+const ChatMessage = ({ message, isMe }) => {
   return (
     <div className={`flex flex-col max-w-[80%] ${isMe ? 'self-end' : 'self-start'}`}>
       <span className={`text-[10px] text-gray-400 mb-1 mx-1 ${isMe ? 'text-right' : 'text-left'}`}>
@@ -16,3 +16,5 @@ export default function ChatMessage({ message, isMe }) {
     </div>
   );
 }
+
+export default ChatMessage; 
