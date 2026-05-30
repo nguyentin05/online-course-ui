@@ -10,8 +10,7 @@ const useOptimistic = (initialState) => {
     try {
       await action();
       return true;
-    } catch (error) {
-      console.error("Thao tác thất bại, rollback giao diện:", error);
+    } catch {
       setState(previousState);
       return false;
     }

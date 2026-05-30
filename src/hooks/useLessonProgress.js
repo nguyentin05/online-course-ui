@@ -1,10 +1,12 @@
 import Apis, { endpoints } from '../configs/Apis';
 import { useSWRConfig } from 'swr'; 
+import { extractErrorMessage } from '../utils/errorUtils';
+import { useCallback } from 'react';
 
 const useLessonProgress = (courseId) => {
   const { mutate } = useSWRConfig();
 
-  const updateProgress = async (lessonId, status) => {
+  const updateProgress = useCallback(async (lessonId, status) => {
     const validStatus = status === 'COMPLETED' ? 'COMPLETED' : 'IN_PROGRESS';
 
     try {
@@ -16,15 +18,14 @@ const useLessonProgress = (courseId) => {
         mutate(endpoints.courses.getProgress(courseId)); 
       }
 
-      return { success: true, data: res.data.data };
+      return { success: true, data: res.data };
     } catch (err) {
-      console.error("Lỗi cập nhật tiến độ:", err);
       return { 
         success: false, 
-        message: err.response?.data?.message || "Không thể cập nhật tiến độ" 
+        message: extractErrorMessage(err, "Không thể cập nhật tiến độ") 
       };
     }
-  };
+  }, [courseId, mutate]);
 
   return { updateProgress };
 };

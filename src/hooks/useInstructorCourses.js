@@ -1,6 +1,8 @@
 import useSWR from 'swr';
 import Apis, { endpoints } from '../configs/Apis';
 import useUserStore from '../store/useUserStore';
+import { extractErrorMessage } from '../utils/errorUtils';
+import { useCallback } from 'react';
 
 const useInstructorCourses = () => {
   const isAuth = useUserStore((s) => s.token !== null);
@@ -9,9 +11,7 @@ const useInstructorCourses = () => {
     isAuth ? endpoints.instructor.myCourses : null
   );
 
-  const myCourses = data || [];
-
-  const createCourse = async (payload, isMultipart = false) => {
+  const createCourse = useCallback(async (payload, isMultipart = false) => {
     try {
       const config = isMultipart 
         ? { headers: { 'Content-Type': 'multipart/form-data' } } 
@@ -19,14 +19,13 @@ const useInstructorCourses = () => {
       
       const res = await Apis.post(endpoints.instructor.create, payload, config);
       mutate();
-      return { success: true, data: res.data.data };
+      return { success: true, data: res.data };
     } catch (err) {
-      console.error("Lỗi tạo khóa học:", err);
-      return { success: false, message: err.response?.message || "Lỗi hệ thống" };
+      return { success: false, message: extractErrorMessage(err, "Lỗi hệ thống") };
     }
-  };
+  }, [mutate]);
 
-  const updateCourse = async (id, payload, isMultipart = false) => {
+  const updateCourse = useCallback(async (id, payload, isMultipart = false) => {
     try {
       const config = isMultipart 
         ? { headers: { 'Content-Type': 'multipart/form-data' } } 
@@ -34,26 +33,24 @@ const useInstructorCourses = () => {
         
       const res = await Apis.put(endpoints.instructor.update(id), payload, config);
       mutate();
-      return { success: true, data: res.data.data };
+      return { success: true, data: res.data };
     } catch (err) {
-      console.error("Lỗi cập nhật khóa học:", err);
-      return { success: false, message: err.response?.data?.message || "Lỗi cập nhật" };
+      return { success: false, message: extractErrorMessage(err, "Lỗi cập nhật") };
     }
-  };
+  }, [mutate]);
 
-  const deleteCourse = async (id) => {
+  const deleteCourse = useCallback(async (id) => {
     try {
       await Apis.delete(endpoints.instructor.delete(id));
       mutate();
       return { success: true };
     } catch (err) {
-      console.error("Lỗi xóa khóa học:", err);
-      return { success: false, message: "Không thể xóa khóa học này" };
+      return { success: false, message: extractErrorMessage(err, "Không thể xóa khóa học này") };
     }
-  };
+  }, [mutate]);
 
   return {
-    myCourses,
+    myCourses: data || [],
     isLoading,
     error,
     createCourse,

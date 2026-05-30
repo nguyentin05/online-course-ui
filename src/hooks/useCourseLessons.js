@@ -8,7 +8,7 @@ const useCourseLessons = (courseId, pageSize = 20) => {
     return `${endpoints.courses.getLessons(courseId)}?page=${pageIndex}&size=${pageSize}`;
   };
 
-  const { data, error, size, setSize, isValidating } = useSWRInfinite(getKey, null,
+  const { data, error, setSize, isValidating } = useSWRInfinite(getKey, null,
     { revalidateFirstPage: false }
   );
 
