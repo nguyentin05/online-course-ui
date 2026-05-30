@@ -1,5 +1,5 @@
 import { useState, useMemo, useEffect } from 'react';
-import { Search as SearchIcon, SlidersHorizontal, ChevronLeft, ChevronRight, X, Link, BarChart2 } from 'lucide-react';
+import { Search as SearchIcon, SlidersHorizontal, ChevronLeft, ChevronRight, X, BarChart2 } from 'lucide-react';
 
 import Input from '../../components/common/Input';
 import CourseGrid from '../../components/course/CourseGrid';

@@ -3,15 +3,10 @@ import { Users, DollarSign, BookOpen, Star, PlusCircle } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import StatCard from '../../components/stats/StatCard';
 import RevenueChart from '../../components/stats/RevenueChart';
-import useUserStore from '../../store/useUserStore';
-// IMPORT HOOK (Chúng ta sẽ viết hook này khi có API)
-// import useInstructorStats from '../../hooks/useInstructorStats'; 
+import useUserStore from '../../store/useUserStore'; 
 
 const Dashboard = () => {
   const user = useUserStore((s) => s.user);
-
-  // MÔ PHỎNG DỮ LIỆU TỪ SWR:
-  // const { stats, isLoading } = useInstructorStats();
   
   // Tạm thời dùng dữ liệu giả lập cho đến khi nối API
   const stats = {

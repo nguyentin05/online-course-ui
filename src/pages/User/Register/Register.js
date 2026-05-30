@@ -1,8 +1,6 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
-import { BookOpen } from 'lucide-react';
-import Apis, { endpoints } from '../../../configs/Apis';
 import StepIndicator from './StepIndicator';
 import StepRole from './StepRole';
 import StepInfo from './StepInfo';
@@ -12,8 +10,6 @@ import { ROLES } from '../../../constants/roles';
 import { authService } from '../../../services/authService';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { registerSchema } from '../../../validations/authSchema';
-
-const STEP_TITLES = ['Chọn vai trò', 'Thông tin tài khoản', 'Ảnh đại diện'];
 
 const Register = () => {
   const nav = useNavigate();

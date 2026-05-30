@@ -1,22 +1,20 @@
 import React from 'react';
 
-export default function Button({ 
+const Button = ({ 
   children, 
-  variant = 'primary', // primary | outline | ghost
-  size = 'md',         // sm | md | lg
+  variant = 'primary',
+  size = 'md',
   isLoading = false,
   className = '',
   disabled,
   ...props 
-}) {
-  // Đã cập nhật đúng hiệu ứng shadow và màu sắc cũ của bạn
+}) => {
   const variants = {
     primary: 'bg-brand text-white hover:bg-brand-dark shadow-lg shadow-brand/20',
     outline: 'border-2 border-brand text-brand hover:bg-brand/5',
     ghost: 'text-gray-600 hover:text-brand hover:bg-brand/10',
   };
 
-  // Cân chỉnh lại padding chuẩn cho nút bo tròn
   const sizes = {
     sm: 'px-4 py-1.5 text-sm',
     md: 'px-5 py-2 text-sm', 
@@ -50,3 +48,5 @@ export default function Button({
     </button>
   );
 }
+
+export default Button;
